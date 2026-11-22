@@ -1,0 +1,5 @@
+# Tickers you added in the Watchlists page. One per line or separated by spaces/commas.
+# Anything here gets prices on the next run of fetch_yf.py.
+
+MRNA
+ABNB
