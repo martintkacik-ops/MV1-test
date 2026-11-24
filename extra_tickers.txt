@@ -3,3 +3,4 @@
 
 MRNA
 ABNB
+sony
