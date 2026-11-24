@@ -20,7 +20,7 @@ concurrency:
 
 env:
   PAGE: index_v8.html              # the page to publish (change this line when you make a newer version)
-  SCRIPT: fetch_yf_v3.py           # the data-fetching script
+  SCRIPT: fetch_yf_v4.py          # the data-fetching script
   REQS: requirements_v2.txt
 
 jobs:
