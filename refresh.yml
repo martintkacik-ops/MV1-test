@@ -1,0 +1,58 @@
+# Robot that refreshes Yahoo data and publishes the site (runs on GitHub, free for public repos).
+name: Refresh market data and publish site
+
+on:
+  schedule:
+    - cron: "*/30 13-21 * * 1-5"   # every 30 min, Mon-Fri, 13:00-21:30 UTC (about 9am-5:30pm Eastern)
+    - cron: "45 22 * * 1-5"        # one more run after the close
+  push:
+    branches: [main]               # also runs whenever you edit a file in the repo
+  workflow_dispatch:               # lets you press "Run workflow" by hand
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  PAGE: index_v8.html              # the page to publish (change this line when you make a newer version)
+  SCRIPT: fetch_yf_v3.py           # the data-fetching script
+  REQS: requirements_v2.txt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ${{ env.REQS }}
+      - run: pip install -r "$REQS"
+      - name: Download Yahoo data (writes data.js)
+        run: python "$SCRIPT" "$PAGE"
+      - name: Assemble the website folder
+        run: |
+          mkdir _site
+          cp "$PAGE" _site/index.html
+          cp data.js _site/data.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
