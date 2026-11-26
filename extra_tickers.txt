@@ -4,7 +4,10 @@
 MRNA
 ABNB
 sony
-crox
-ntsk
-gkos
-pcor
+CROX
+NTSK
+GKOS
+PCOR
+spot
+RCL
+EBAY
