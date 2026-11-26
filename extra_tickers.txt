@@ -11,3 +11,5 @@ PCOR
 spot
 RCL
 EBAY
+ANF
+SHOP
